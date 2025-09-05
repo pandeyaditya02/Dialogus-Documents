@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dialogus - Productions</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts: Inter & Space Grotesk -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide-react@0.378.0/dist/lucide-react.js"></script>
+    
+    <style>
+        /* Base Styles */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #050505;
+            color: #E4E4E7;
+        }
+        
+        /* Apply Space Grotesk to the header and hero title */
+        #header, .hero-title {
+            font-family: 'Space Grotesk', sans-serif;
+        }
+        
+        /* Dark Navigation Bar Styles with Scroll Effect */
+        .dark-glass-nav {
+            background: rgba(5, 5, 5, 0.7);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .nav-link {
+            position: relative;
+            color: #a1a1aa; /* Lighter gray for non-active links */
+            text-decoration: none;
+            transition: color 0.3s ease;
+            font-size: 0.95rem; /* Slightly larger font size */
+        }
+
+        .nav-link:hover, .nav-link.active {
+            color: #ffffff; /* White on hover and for active link */
+        }
+        
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -8px; /* More space for the underline */
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #c026d3;
+            transition: width 0.3s ease-in-out;
+        }
+
+        .nav-link:hover::after, .nav-link.active::after {
+            width: 100%;
+        }
+        
+        /* Netflix-style Slider */
+        .slider-container {
+            -ms-overflow-style: none; /* IE and Edge */
+            scrollbar-width: none; /* Firefox */
+        }
+        .slider-container::-webkit-scrollbar {
+            display: none; /* Chrome, Safari, and Opera */
+        }
+
+        .slider-arrow {
+            background: rgba(0, 0, 0, 0.5);
+            transition: all 0.2s ease-in-out;
+            opacity: 0; /* Initially hidden */
+        }
+        
+        .slider-wrapper:hover .slider-arrow {
+            opacity: 1; /* Show on hover of wrapper */
+        }
+        
+        .slider-arrow:hover {
+            background: rgba(0, 0, 0, 0.8);
+            transform: translateY(-50%) scale(1.1);
+        }
+        
+        .video-card-thumbnail {
+            transition: transform 0.3s ease-in-out;
+        }
+        
+        .video-card:hover .video-card-thumbnail {
+            transform: scale(1.05);
+        }
+        
+        .video-title-truncate {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* General Styles */
+        .section-title {
+            color: #F4F4F5;
+            font-weight: 800;
+        }
+
+        .primary-cta {
+            background-color: #c026d3;
+            color: #fff;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 20px rgba(192, 38, 211, 0.4);
+        }
+
+        .primary-cta:hover {
+            background-color: #d946ef;
+            transform: scale(1.05);
+            box-shadow: 0 0 30px rgba(217, 70, 239, 0.6);
+        }
+        
+        .subscribe-cta {
+            background-color: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            color: #d4d4d8;
+            transition: all 0.3s ease;
+        }
+        .subscribe-cta:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-color: #ffffff;
+            color: #ffffff;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- Dark Header & Navigation -->
+    <header id="header" class="dark-glass-nav fixed top-0 left-0 right-0 z-50">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="/">
+                <img src="/NEW LOGO.png" alt="Dialogus Logo" class="h-10 w-auto">
+            </a>
+            <nav class="hidden md:flex space-x-12 items-center text-sm font-medium">
+                <a href="/" class="nav-link">Home</a>
+                <a href="/productions/" class="nav-link active">Productions</a>
+                <a href="/about/" class="nav-link">About Us</a>
+                <a href="/shows/" class="nav-link">Shows</a>
+                <a href="/talent/" class="nav-link">Talent</a>
+                <a href="/insights/" class="nav-link">Insights</a>
+            </nav>
+            <div class="hidden md:flex items-center gap-4">
+                <a href="#" class="subscribe-cta font-medium py-2 px-5 rounded-full text-sm">
+                    Subscribe
+                </a>
+                <a href="/#contact" class="primary-cta font-medium py-2 px-5 rounded-full text-sm">
+                    Start a Project
+                </a>
+            </div>
+            <button id="mobile-menu-button" class="md:hidden text-white">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-menu"><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/></svg>
+            </button>
+        </div>
+        <!-- Mobile Menu (Dark theme) -->
+        <div id="mobile-menu" class="mobile-menu absolute top-full left-0 right-0 bg-black md:hidden transform -translate-x-full transition-transform duration-300 ease-in-out">
+             <a href="/" class="block text-gray-300 text-center py-4 px-4 hover:bg-gray-900 transition-colors duration-300 nav-link">Home</a>
+             <a href="/productions/" class="block text-gray-300 text-center py-4 px-4 hover:bg-gray-900 transition-colors duration-300 nav-link active">Productions</a>
+             <a href="/about/" class="block text-gray-300 text-center py-4 px-4 hover:bg-gray-900 transition-colors duration-300 nav-link">About Us</a>
+             <a href="/shows/" class="block text-gray-300 text-center py-4 px-4 hover:bg-gray-900 transition-colors duration-300 nav-link">Shows</a>
+             <a href="/talent/" class="block text-gray-300 text-center py-4 px-4 hover:bg-gray-900 transition-colors duration-300 nav-link">Talent</a>
+             <a href="/insights/" class="block text-gray-300 text-center py-4 px-4 hover:bg-gray-900 transition-colors duration-300 nav-link">Insights</a>
+             <div class="p-4 flex flex-col gap-4">
+                <a href="#" class="block text-center py-3 px-4 bg-gray-800 text-white rounded-full hover:bg-gray-700 transition-colors duration-300">Subscribe</a>
+                <a href="/#contact" class="block text-center py-3 px-4 bg-fuchsia-600 text-white rounded-full hover:bg-fuchsia-500 transition-colors duration-300">Start a Project</a>
+             </div>
+        </div>
+    </header>
+
+    <main class="pt-24">
+        <!-- Productions Section -->
+        <section id="videos" class="py-20 md:py-28 bg-black/50">
+            <div class="container mx-auto px-6">
+                <div class="text-left max-w-2xl mb-12">
+                    <h2 class="section-title text-3xl md:text-4xl">Latest Productions</h2>
+                </div>
+                
+                <div class="space-y-16">
+                    <!-- Subsection: Editor's Pick -->
+                    <div class="slider-wrapper relative">
+                        <h3 class="text-xl md:text-2xl font-bold text-white mb-4">EDITOR'S PICK</h3>
+                        <div class="slider-container flex overflow-x-auto space-x-4 md:space-x-6 pb-4 scroll-smooth">
+                            <!-- Card 1 -->
+                            <a href="https://www.youtube.com/watch?v=qRXKNV92TWs" target="_blank" class="video-card group relative flex-shrink-0 w-64 md:w-80 lg:w-96 aspect-video rounded-lg overflow-hidden cursor-pointer">
+                                <img src="https://i3.ytimg.com/vi/qRXKNV92TWs/maxresdefault.jpg" class="video-card-thumbnail w-full h-full object-cover" alt="The Real Reason We Still Struggle With Hindu-Muslim Unity">
+                                <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+                                <div class="absolute bottom-0 left-0 p-4 w-full">
+                                    <h4 class="text-white font-bold text-lg video-title-truncate">The Real Reason We Still Struggle With Hindu-Muslim Unity</h4>
+                                </div>
+                            </a>
+                            <!-- Card 2 -->
+                            <a href="https://www.youtube.com/watch?v=Hy_9H97bPgE" target="_blank" class="video-card group relative flex-shrink-0 w-64 md:w-80 lg:w-96 aspect-video rounded-lg overflow-hidden cursor-pointer">
+                                <img src="https://i3.ytimg.com/vi/Hy_9H97bPgE/maxresdefault.jpg" class="video-card-thumbnail w-full h-full object-cover" alt="War should be the last resort when other options have been exhausted">
+                                <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+                                <div class="absolute bottom-0 left-0 p-4 w-full">
+                                    <h4 class="text-white font-bold text-lg video-title-truncate">War should be the last resort when other options have been exhausted</h4>
+                                </div>
+                            </a>
+                            <!-- Card 3 -->
+                            <a href="https://www.youtube.com/watch?v=HzrQc3sgtSs" target="_blank" class="video-card group relative flex-shrink-0 w-64 md:w-80 lg:w-96 aspect-video rounded-lg overflow-hidden cursor-pointer">
+                                <img src="https://i3.ytimg.com/vi/HzrQc3sgtSs/maxresdefault.jpg" class="video-card-thumbnail w-full h-full object-cover" alt="India has a huge development agenda; war is not the country's priority">
+                                <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+                                <div class="absolute bottom-0 left-0 p-4 w-full">
+                                    <h4 class="text-white font-bold text-lg video-title-truncate">India has a huge development agenda; war is not the country's priority || Qamar Agha || DIALOGUS</h4>
+                                </div>
+                            </a>
+                            <!-- Card 4 -->
+                            <a href="https://www.youtube.com/watch?v=Ryp224aa05Y" target="_blank" class="video-card group relative flex-shrink-0 w-64 md:w-80 lg:w-96 aspect-video rounded-lg overflow-hidden cursor-pointer">
+                                <img src="https://i3.ytimg.com/vi/Ryp224aa05Y/maxresdefault.jpg" class="video-card-thumbnail w-full h-full object-cover" alt="India needs to expand its fighter squadrons to bolster national security">
+                                <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+                                <div class="absolute bottom-0 left-0 p-4 w-full">
+                                    <h4 class="text-white font-bold text-lg video-title-truncate">India needs to expand its fighter squadrons to bolster national security || DIALOGUS</h4>
+                                </div>
+                            </a>
+                            <!-- Card 5 -->
+                            <a href="https://www.youtube.com/watch?v=4PTGVVsbrAU" target="_blank" class="video-card group relative flex-shrink-0 w-64 md:w-80 lg:w-96 aspect-video rounded-lg overflow-hidden cursor-pointer">
+                                <img src="https://i3.ytimg.com/vi/4PTGVVsbrAU/maxresdefault.jpg" class="video-card-thumbnail w-full h-full object-cover" alt="Pahalgam attack is a conspiracy hatched by the Pakistan Army">
+                                <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+                                <div class="absolute bottom-0 left-0 p-4 w-full">
+                                    <h4 class="text-white font-bold text-lg video-title-truncate">Pahalgam attack is a conspiracy hatched by the Pakistan Army || DIALOGUS</h4>
+                                </div>
+                            </a>
+                             <!-- Card 6 -->
+                            <a href="https://www.youtube.com/watch?v=ATg1cBN8hR0" target="_blank" class="video-card group relative flex-shrink-0 w-64 md:w-80 lg:w-96 aspect-video rounded-lg overflow-hidden cursor-pointer">
+                                <img src="https://i3.ytimg.com/vi/ATg1cBN8hR0/maxresdefault.jpg" class="video-card-thumbnail w-full h-full object-cover" alt="India should help revive WTO, Rule of law will favour Global Trade">
+                                <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+                                <div class="absolute bottom-0 left-0 p-4 w-full">
+                                    <h4 class="text-white font-bold text-lg video-title-truncate">India should help revive WTO, Rule of law will favour Global Trade || DIALOGUS</h4>
+                                </div>
+                            </a>
+                        </div>
+                        <button class="slider-arrow prev-btn absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 rounded-full p-2 z-10 hidden md:block"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-left text-white"><path d="m15 18-6-6 6-6"/></svg></button>
+                        <button class="slider-arrow next-btn absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 rounded-full p-2 z-10 hidden md:block"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-right text-white"><path d="m9 18 6-6-6-6"/></svg></button>
+                    </div>
+
+                    <!-- Subsection: Trending -->
+                    <div class="slider-wrapper relative">
+                        <h3 class="text-xl md:text-2xl font-bold text-white mb-4">TRENDING</h3>
+                        <div class="slider-container flex overflow-x-auto space-x-4 md:space-x-6 pb-4 scroll-smooth">
+                            <!-- Card 4 -->
+                            <a href="https://www.youtube.com/watch?v=Ryp224aa05Y" target="_blank" class="video-card group relative flex-shrink-0 w-64 md:w-80 lg:w-96 aspect-video rounded-lg overflow-hidden cursor-pointer">
+                                <img src="https://i3.ytimg.com/vi/Ryp224aa05Y/maxresdefault.jpg" class="video-card-thumbnail w-full h-full object-cover" alt="India needs to expand its fighter squadrons to bolster national security">
+                                <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+                                <div class="absolute bottom-0 left-0 p-4 w-full">
+                                    <h4 class="text-white font-bold text-lg video-title-truncate">India needs to expand its fighter squadrons to bolster national security || DIALOGUS</h4>
+                                </div>
+                            </a>
+                            <!-- Card 5 -->
+                            <a href="https://www.youtube.com/watch?v=4PTGVVsbrAU" target="_blank" class="video-card group relative flex-shrink-0 w-64 md:w-80 lg:w-96 aspect-video rounded-lg overflow-hidden cursor-pointer">
+                                <img src="https://i3.ytimg.com/vi/4PTGVVsbrAU/maxresdefault.jpg" class="video-card-thumbnail w-full h-full object-cover" alt="Pahalgam attack is a conspiracy hatched by the Pakistan Army">
+                                <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+                                <div class="absolute bottom-0 left-0 p-4 w-full">
+                                    <h4 class="text-white font-bold text-lg video-title-truncate">Pahalgam attack is a conspiracy hatched by the Pakistan Army || DIALOGUS</h4>
+                                </div>
+                            </a>
+                             <!-- Card 6 -->
+                            <a href="https://www.youtube.com/watch?v=ATg1cBN8hR0" target="_blank" class="video-card group relative flex-shrink-0 w-64 md:w-80 lg:w-96 aspect-video rounded-lg overflow-hidden cursor-pointer">
+                                <img src="https://i3.ytimg.com/vi/ATg1cBN8hR0/maxresdefault.jpg" class="video-card-thumbnail w-full h-full object-cover" alt="India should help revive WTO, Rule of law will favour Global Trade">
+                                <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+                                <div class="absolute bottom-0 left-0 p-4 w-full">
+                                    <h4 class="text-white font-bold text-lg video-title-truncate">India should help revive WTO, Rule of law will favour Global Trade || DIALOGUS</h4>
+                                </div>
+                            </a>
+                             <!-- Card 1 -->
+                            <a href="https://www.youtube.com/watch?v=qRXKNV92TWs" target="_blank" class="video-card group relative flex-shrink-0 w-64 md:w-80 lg:w-96 aspect-video rounded-lg overflow-hidden cursor-pointer">
+                                <img src="https://i3.ytimg.com/vi/qRXKNV92TWs/maxresdefault.jpg" class="video-card-thumbnail w-full h-full object-cover" alt="The Real Reason We Still Struggle With Hindu-Muslim Unity">
+                                <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+                                <div class="absolute bottom-0 left-0 p-4 w-full">
+                                    <h4 class="text-white font-bold text-lg video-title-truncate">The Real Reason We Still Struggle With Hindu-Muslim Unity</h4>
+                                </div>
+                            </a>
+                            <!-- Card 2 -->
+                            <a href="https://www.youtube.com/watch?v=Hy_9H97bPgE" target="_blank" class="video-card group relative flex-shrink-0 w-64 md:w-80 lg:w-96 aspect-video rounded-lg overflow-hidden cursor-pointer">
+                                <img src="https://i3.ytimg.com/vi/Hy_9H97bPgE/maxresdefault.jpg" class="video-card-thumbnail w-full h-full object-cover" alt="War should be the last resort when other options have been exhausted">
+                                <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+                                <div class="absolute bottom-0 left-0 p-4 w-full">
+                                    <h4 class="text-white font-bold text-lg video-title-truncate">War should be the last resort when other options have been exhausted</h4>
+                                </div>
+                            </a>
+                            <!-- Card 3 -->
+                            <a href="https://www.youtube.com/watch?v=HzrQc3sgtSs" target="_blank" class="video-card group relative flex-shrink-0 w-64 md:w-80 lg:w-96 aspect-video rounded-lg overflow-hidden cursor-pointer">
+                                <img src="https://i3.ytimg.com/vi/HzrQc3sgtSs/maxresdefault.jpg" class="video-card-thumbnail w-full h-full object-cover" alt="India has a huge development agenda; war is not the country's priority">
+                                <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+                                <div class="absolute bottom-0 left-0 p-4 w-full">
+                                    <h4 class="text-white font-bold text-lg video-title-truncate">India has a huge development agenda; war is not the country's priority || Qamar Agha || DIALOGUS</h4>
+                                </div>
+                            </a>
+                        </div>
+                        <button class="slider-arrow prev-btn absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 rounded-full p-2 z-10 hidden md:block"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-left text-white"><path d="m15 18-6-6 6-6"/></svg></button>
+                        <button class="slider-arrow next-btn absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 rounded-full p-2 z-10 hidden md:block"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-right text-white"><path d="m9 18 6-6-6-6"/></svg></button>
+                    </div>
+
+                     <!-- Subsection: World View -->
+                    <div class="slider-wrapper relative">
+                        <h3 class="text-xl md:text-2xl font-bold text-white mb-4">WORLD VIEW</h3>
+                        <div class="slider-container flex overflow-x-auto space-x-4 md:space-x-6 pb-4 scroll-smooth">
+                            <!-- Card 3 -->
+                            <a href="https://www.youtube.com/watch?v=HzrQc3sgtSs" target="_blank" class="video-card group relative flex-shrink-0 w-64 md:w-80 lg:w-96 aspect-video rounded-lg overflow-hidden cursor-pointer">
+                                <img src="https://i3.ytimg.com/vi/HzrQc3sgtSs/maxresdefault.jpg" class="video-card-thumbnail w-full h-full object-cover" alt="India has a huge development agenda; war is not the country's priority">
+                                <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+                                <div class="absolute bottom-0 left-0 p-4 w-full">
+                                    <h4 class="text-white font-bold text-lg video-title-truncate">India has a huge development agenda; war is not the country's priority || Qamar Agha || DIALOGUS</h4>
+                                </div>
+                            </a>
+                            <!-- Card 1 -->
+                            <a href="https://www.youtube.com/watch?v=qRXKNV92TWs" target="_blank" class="video-card group relative flex-shrink-0 w-64 md:w-80 lg:w-96 aspect-video rounded-lg overflow-hidden cursor-pointer">
+                                <img src="https://i3.ytimg.com/vi/qRXKNV92TWs/maxresdefault.jpg" class="video-card-thumbnail w-full h-full object-cover" alt="The Real Reason We Still Struggle With Hindu-Muslim Unity">
+                                <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+                                <div class="absolute bottom-0 left-0 p-4 w-full">
+                                    <h4 class="text-white font-bold text-lg video-title-truncate">The Real Reason We Still Struggle With Hindu-Muslim Unity</h4>
+                                </div>
+                            </a>
+                            <!-- Card 6 -->
+                            <a href="https://www.youtube.com/watch?v=ATg1cBN8hR0" target="_blank" class="video-card group relative flex-shrink-0 w-64 md:w-80 lg:w-96 aspect-video rounded-lg overflow-hidden cursor-pointer">
+                                <img src="https://i3.ytimg.com/vi/ATg1cBN8hR0/maxresdefault.jpg" class="video-card-thumbnail w-full h-full object-cover" alt="India should help revive WTO, Rule of law will favour Global Trade">
+                                <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+                                <div class="absolute bottom-0 left-0 p-4 w-full">
+                                    <h4 class="text-white font-bold text-lg video-title-truncate">India should help revive WTO, Rule of law will favour Global Trade || DIALOGUS</h4>
+                                </div>
+                            </a>
+                             <!-- Card 2 -->
+                            <a href="https://www.youtube.com/watch?v=Hy_9H97bPgE" target="_blank" class="video-card group relative flex-shrink-0 w-64 md:w-80 lg:w-96 aspect-video rounded-lg overflow-hidden cursor-pointer">
+                                <img src="https://i3.ytimg.com/vi/Hy_9H97bPgE/maxresdefault.jpg" class="video-card-thumbnail w-full h-full object-cover" alt="War should be the last resort when other options have been exhausted">
+                                <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+                                <div class="absolute bottom-0 left-0 p-4 w-full">
+                                    <h4 class="text-white font-bold text-lg video-title-truncate">War should be the last resort when other options have been exhausted</h4>
+                                </div>
+                            </a>
+                             <!-- Card 4 -->
+                            <a href="https://www.youtube.com/watch?v=Ryp224aa05Y" target="_blank" class="video-card group relative flex-shrink-0 w-64 md:w-80 lg:w-96 aspect-video rounded-lg overflow-hidden cursor-pointer">
+                                <img src="https://i3.ytimg.com/vi/Ryp224aa05Y/maxresdefault.jpg" class="video-card-thumbnail w-full h-full object-cover" alt="India needs to expand its fighter squadrons to bolster national security">
+                                <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+                                <div class="absolute bottom-0 left-0 p-4 w-full">
+                                    <h4 class="text-white font-bold text-lg video-title-truncate">India needs to expand its fighter squadrons to bolster national security || DIALOGUS</h4>
+                                </div>
+                            </a>
+                            <!-- Card 5 -->
+                            <a href="https://www.youtube.com/watch?v=4PTGVVsbrAU" target="_blank" class="video-card group relative flex-shrink-0 w-64 md:w-80 lg:w-96 aspect-video rounded-lg overflow-hidden cursor-pointer">
+                                <img src="https://i3.ytimg.com/vi/4PTGVVsbrAU/maxresdefault.jpg" class="video-card-thumbnail w-full h-full object-cover" alt="Pahalgam attack is a conspiracy hatched by the Pakistan Army">
+                                <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+                                <div class="absolute bottom-0 left-0 p-4 w-full">
+                                    <h4 class="text-white font-bold text-lg video-title-truncate">Pahalgam attack is a conspiracy hatched by the Pakistan Army || DIALOGUS</h4>
+                                </div>
+                            </a>
+                        </div>
+                        <button class="slider-arrow prev-btn absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 rounded-full p-2 z-10 hidden md:block"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-left text-white"><path d="m15 18-6-6 6-6"/></svg></button>
+                        <button class="slider-arrow next-btn absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 rounded-full p-2 z-10 hidden md:block"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-right text-white"><path d="m9 18 6-6-6-6"/></svg></button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer id="contact" class="bg-black border-t border-gray-900">
+        <!-- ... existing footer ... -->
+    </footer>
+
+    <script>
+        // Mobile menu toggle
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+        mobileMenuButton.addEventListener('click', () => {
+            mobileMenu.classList.toggle('-translate-x-full');
+        });
+        const mobileMenuLinks = mobileMenu.querySelectorAll('a.nav-link');
+        mobileMenuLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.add('-translate-x-full');
+            });
+        });
+
+        // Sticky header background on scroll
+        const header = document.getElementById('header');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 20) { 
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+        });
+
+        // Netflix-style slider functionality
+        document.addEventListener('DOMContentLoaded', () => {
+            const sliderWrappers = document.querySelectorAll('.slider-wrapper');
+
+            sliderWrappers.forEach(wrapper => {
+                const container = wrapper.querySelector('.slider-container');
+                const prevBtn = wrapper.querySelector('.prev-btn');
+                const nextBtn = wrapper.querySelector('.next-btn');
+
+                if(!container || !prevBtn || !nextBtn) return;
+
+                nextBtn.addEventListener('click', () => {
+                    const scrollAmount = container.clientWidth * 0.8;
+                    container.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+                });
+
+                prevBtn.addEventListener('click', () => {
+                    const scrollAmount = container.clientWidth * 0.8;
+                    container.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+                });
+            });
+        });
+    </script>
+</body>
+</html>

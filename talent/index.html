@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dialogus - Talent</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts: Inter & Space Grotesk -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide-react@0.378.0/dist/lucide-react.js"></script>
+    
+    <style>
+        /* Base Styles */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #050505;
+            color: #E4E4E7;
+        }
+        
+        /* Apply Space Grotesk to the header */
+        #header {
+            font-family: 'Space Grotesk', sans-serif;
+        }
+        
+        /* Dark Navigation Bar Styles */
+        .dark-glass-nav {
+            background: rgba(5, 5, 5, 0.7);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .nav-link {
+            position: relative;
+            color: #a1a1aa;
+            text-decoration: none;
+            transition: color 0.3s ease;
+            font-size: 0.95rem;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            color: #ffffff;
+        }
+        
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #c026d3;
+            transition: width 0.3s ease-in-out;
+        }
+
+        .nav-link:hover::after, .nav-link.active::after {
+            width: 100%;
+        }
+        
+        /* Speaker Card Styles */
+        .speaker-card {
+            position: relative;
+        }
+
+        .speaker-info {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+            padding: 1rem;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all 0.3s ease;
+        }
+        
+        .speaker-card:hover .speaker-info {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* General Styles */
+        .section-title {
+            color: #F4F4F5;
+            font-weight: 800;
+        }
+
+        .primary-cta {
+            background-color: #c026d3;
+            color: #fff;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 20px rgba(192, 38, 211, 0.4);
+        }
+
+        .primary-cta:hover {
+            background-color: #d946ef;
+            transform: scale(1.05);
+            box-shadow: 0 0 30px rgba(217, 70, 239, 0.6);
+        }
+        
+        .subscribe-cta {
+            background-color: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            color: #d4d4d8;
+            transition: all 0.3s ease;
+        }
+        .subscribe-cta:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-color: #ffffff;
+            color: #ffffff;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- Dark Header & Navigation -->
+    <header id="header" class="dark-glass-nav fixed top-0 left-0 right-0 z-50">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="/">
+                <img src="/NEW LOGO.png" alt="Dialogus Logo" class="h-10 w-auto">
+            </a>
+            <nav class="hidden md:flex space-x-12 items-center text-sm font-medium">
+                <a href="/" class="nav-link">Home</a>
+                <a href="/productions/" class="nav-link">Productions</a>
+                <a href="/about/" class="nav-link">About Us</a>
+                <a href="/shows/" class="nav-link">Shows</a>
+                <a href="/talent/" class="nav-link active">Talent</a>
+                <a href="/insights/" class="nav-link">Insights</a>
+            </nav>
+            <div class="hidden md:flex items-center gap-4">
+                <a href="#" class="subscribe-cta font-medium py-2 px-5 rounded-full text-sm">
+                    Subscribe
+                </a>
+                <a href="/#contact" class="primary-cta font-medium py-2 px-5 rounded-full text-sm">
+                    Start a Project
+                </a>
+            </div>
+            <button id="mobile-menu-button" class="md:hidden text-white">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-menu"><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/></svg>
+            </button>
+        </div>
+        <!-- Mobile Menu (Dark theme) -->
+        <div id="mobile-menu" class="mobile-menu absolute top-full left-0 right-0 bg-black md:hidden transform -translate-x-full transition-transform duration-300 ease-in-out">
+             <a href="/" class="block text-gray-300 text-center py-4 px-4 hover:bg-gray-900 transition-colors duration-300 nav-link">Home</a>
+             <a href="/productions/" class="block text-gray-300 text-center py-4 px-4 hover:bg-gray-900 transition-colors duration-300 nav-link">Productions</a>
+             <a href="/about/" class="block text-gray-300 text-center py-4 px-4 hover:bg-gray-900 transition-colors duration-300 nav-link">About Us</a>
+             <a href="/shows/" class="block text-gray-300 text-center py-4 px-4 hover:bg-gray-900 transition-colors duration-300 nav-link">Shows</a>
+             <a href="/talent/" class="block text-gray-300 text-center py-4 px-4 hover:bg-gray-900 transition-colors duration-300 nav-link active">Talent</a>
+             <a href="/insights/" class="block text-gray-300 text-center py-4 px-4 hover:bg-gray-900 transition-colors duration-300 nav-link">Insights</a>
+             <div class="p-4 flex flex-col gap-4">
+                <a href="#" class="block text-center py-3 px-4 bg-gray-800 text-white rounded-full hover:bg-gray-700 transition-colors duration-300">Subscribe</a>
+                <a href="/#contact" class="block text-center py-3 px-4 bg-fuchsia-600 text-white rounded-full hover:bg-fuchsia-500 transition-colors duration-300">Start a Project</a>
+             </div>
+        </div>
+    </header>
+
+    <main class="pt-24">
+        <!-- Speakers Section -->
+        <section id="speakers" class="py-20 md:py-28">
+            <div class="container mx-auto px-6">
+                 <div class="text-center max-w-2xl mx-auto mb-16">
+                    <h2 class="section-title text-3xl md:text-4xl mb-4">The Voices Behind Dialogus</h2>
+                    <p class="text-gray-400">Meet the brilliant minds and compelling personalities that host our shows and lead our creative productions.</p>
+                </div>
+                <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
+                    <!-- Speaker 1 -->
+                    <div class="speaker-card rounded-lg overflow-hidden relative">
+                        <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=400&q=80" alt="Headshot of Ava Chen" class="w-full h-full object-cover transition-transform duration-300 hover:scale-105">
+                        <div class="speaker-info">
+                            <h3 class="font-bold text-lg text-white">Ava Chen</h3>
+                            <p class="text-fuchsia-300 text-sm">Host, The Digital Dialogue</p>
+                        </div>
+                    </div>
+                     <!-- Speaker 2 -->
+                     <div class="speaker-card rounded-lg overflow-hidden relative">
+                        <img src="https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=400&q=80" alt="Headshot of Leo Kim" class="w-full h-full object-cover transition-transform duration-300 hover:scale-105">
+                        <div class="speaker-info">
+                            <h3 class="font-bold text-lg text-white">Leo Kim</h3>
+                            <p class="text-fuchsia-300 text-sm">Host, Uncharted Territories</p>
+                        </div>
+                    </div>
+                    <!-- Speaker 3 -->
+                    <div class="speaker-card rounded-lg overflow-hidden relative">
+                        <img src="https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=400&q=80" alt="Headshot of Mia Jones" class="w-full h-full object-cover transition-transform duration-300 hover:scale-105">
+                        <div class="speaker-info">
+                            <h3 class="font-bold text-lg text-white">Mia Jones</h3>
+                            <p class="text-fuchsia-300 text-sm">Host, The Creative Code</p>
+                        </div>
+                    </div>
+                    <!-- Speaker 4 -->
+                    <div class="speaker-card rounded-lg overflow-hidden relative">
+                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=400&q=80" alt="Headshot of David Rodriguez" class="w-full h-full object-cover transition-transform duration-300 hover:scale-105">
+                        <div class="speaker-info">
+                            <h3 class="font-bold text-lg text-white">David Rodriguez</h3>
+                            <p class="text-fuchsia-300 text-sm">Executive Producer</p>
+                        </div>
+                    </div>
+                    <!-- Speaker 5 -->
+                    <div class="speaker-card rounded-lg overflow-hidden relative">
+                        <img src="https://images.unsplash.com/photo-1580489944761-15a19d654956?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=400&q=80" alt="Headshot of Elena Sato" class="w-full h-full object-cover transition-transform duration-300 hover:scale-105">
+                        <div class="speaker-info">
+                            <h3 class="font-bold text-lg text-white">Elena Sato</h3>
+                            <p class="text-fuchsia-300 text-sm">Head of Audio</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer id="contact" class="bg-black border-t border-gray-900">
+        <!-- ... existing footer ... -->
+    </footer>
+
+    <script>
+        // Mobile menu toggle
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+        mobileMenuButton.addEventListener('click', () => {
+            mobileMenu.classList.toggle('-translate-x-full');
+        });
+        const mobileMenuLinks = mobileMenu.querySelectorAll('a.nav-link');
+        mobileMenuLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.add('-translate-x-full');
+            });
+        });
+    </script>
+</body>
+</html>
