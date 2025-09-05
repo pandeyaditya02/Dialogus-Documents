@@ -1,0 +1,821 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dialogus - Crafting Digital Narratives</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts: Inter & Space Grotesk -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide-react@0.378.0/dist/lucide-react.js"></script>
+    
+    <style>
+        /* Base Styles */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #050505;
+            color: #E4E4E7;
+        }
+        
+        /* Apply Space Grotesk to the header and hero title */
+        #header, .hero-title {
+            font-family: 'Space Grotesk', sans-serif;
+        }
+        
+        /* Dark Navigation Bar Styles with Scroll Effect */
+        .dark-glass-nav {
+            background: transparent; /* Initially transparent */
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-bottom: 1px solid transparent; /* Initially transparent border */
+            transition: background-color 0.4s ease-in-out, border-color 0.4s ease-in-out;
+        }
+
+        .dark-glass-nav.scrolled {
+            background: rgba(5, 5, 5, 0.7);
+            border-bottom-color: rgba(255, 255, 255, 0.08);
+        }
+
+        .nav-link {
+            position: relative;
+            color: #a1a1aa; /* Lighter gray for non-active links */
+            text-decoration: none;
+            transition: color 0.3s ease;
+            font-size: 0.95rem; /* Slightly larger font size */
+        }
+
+        .nav-link:hover, .nav-link.active {
+            color: #ffffff; /* White on hover and for active link */
+        }
+        
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -8px; /* More space for the underline */
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #c026d3;
+            transition: width 0.3s ease-in-out;
+        }
+
+        .nav-link:hover::after, .nav-link.active::after {
+            width: 100%;
+        }
+
+        /* Cinematic Hero Section */
+        .hero-video-bg {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 100vw;
+            height: 56.25vw; /* 16:9 aspect ratio */
+            min-height: 100vh;
+            min-width: 177.77vh; /* 16:9 aspect ratio for portrait */
+            transform: translate(-50%, -50%);
+            z-index: 0;
+            pointer-events: none;
+        }
+        
+        /* Card Styles */
+        .card-base {
+            background: linear-gradient(145deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            transition: all 0.3s ease-in-out;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card-base:hover {
+            transform: translateY(-8px);
+            background: linear-gradient(145deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.03));
+            border-color: rgba(255, 255, 255, 0.15);
+        }
+        
+        /* Netflix-style Slider */
+        .slider-container {
+            -ms-overflow-style: none; /* IE and Edge */
+            scrollbar-width: none; /* Firefox */
+        }
+        .slider-container::-webkit-scrollbar {
+            display: none; /* Chrome, Safari, and Opera */
+        }
+
+        .slider-arrow {
+            background: rgba(0, 0, 0, 0.5);
+            transition: all 0.2s ease-in-out;
+            opacity: 0; /* Initially hidden */
+        }
+        
+        .slider-wrapper:hover .slider-arrow {
+            opacity: 1; /* Show on hover of wrapper */
+        }
+        
+        .slider-arrow:hover {
+            background: rgba(0, 0, 0, 0.8);
+            transform: translateY(-50%) scale(1.1);
+        }
+        
+        .video-card-thumbnail {
+            transition: transform 0.3s ease-in-out;
+        }
+        
+        .video-card:hover .video-card-thumbnail {
+            transform: scale(1.05);
+        }
+        
+        .video-title-truncate {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* General Styles */
+        .section-title {
+            color: #F4F4F5;
+            font-weight: 800;
+        }
+
+        .primary-cta {
+            background-color: #c026d3;
+            color: #fff;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 20px rgba(192, 38, 211, 0.4);
+        }
+
+        .primary-cta:hover {
+            background-color: #d946ef;
+            transform: scale(1.05);
+            box-shadow: 0 0 30px rgba(217, 70, 239, 0.6);
+        }
+        
+        .subscribe-cta {
+            background-color: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            color: #d4d4d8;
+            transition: all 0.3s ease;
+        }
+        .subscribe-cta:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-color: #ffffff;
+            color: #ffffff;
+        }
+        
+        .speaker-card {
+            position: relative;
+        }
+
+        .speaker-info {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+            padding: 1rem;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all 0.3s ease;
+        }
+        
+        .speaker-card:hover .speaker-info {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .featured-logo {
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+        .featured-logo:hover {
+            opacity: 1;
+            transform: scale(1.1);
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- Dark Header & Navigation -->
+    <header id="header" class="dark-glass-nav fixed top-0 left-0 right-0 z-50">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="#">
+                <img src="NEW LOGO.png" alt="Dialogus Logo" class="h-10 w-auto">
+            </a>
+            <nav class="hidden md:flex space-x-12 items-center text-sm font-medium">
+                <a href="#home" class="nav-link">Home</a>
+                <a href="#videos" class="nav-link">Productions</a>
+                <a href="#about" class="nav-link">About Us</a>
+                <a href="#podcasts" class="nav-link">Shows</a>
+                <a href="#speakers" class="nav-link">Talent</a>
+                <a href="#blog" class="nav-link">Insights</a>
+            </nav>
+            <div class="hidden md:flex items-center gap-4">
+                <a href="#" class="subscribe-cta font-medium py-2 px-5 rounded-full text-sm">
+                    Subscribe
+                </a>
+                <a href="#contact" class="primary-cta font-medium py-2 px-5 rounded-full text-sm">
+                    Start a Project
+                </a>
+            </div>
+            <button id="mobile-menu-button" class="md:hidden text-white">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-menu"><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/></svg>
+            </button>
+        </div>
+        <!-- Mobile Menu (Dark theme) -->
+        <div id="mobile-menu" class="mobile-menu absolute top-full left-0 right-0 bg-black md:hidden transform -translate-x-full transition-transform duration-300 ease-in-out">
+             <a href="#home" class="block text-gray-300 text-center py-4 px-4 hover:bg-gray-900 transition-colors duration-300 nav-link">Home</a>
+             <a href="#videos" class="block text-gray-300 text-center py-4 px-4 hover:bg-gray-900 transition-colors duration-300 nav-link">Productions</a>
+             <a href="#about" class="block text-gray-300 text-center py-4 px-4 hover:bg-gray-900 transition-colors duration-300 nav-link">About Us</a>
+             <a href="#podcasts" class="block text-gray-300 text-center py-4 px-4 hover:bg-gray-900 transition-colors duration-300 nav-link">Shows</a>
+             <a href="#speakers" class="block text-gray-300 text-center py-4 px-4 hover:bg-gray-900 transition-colors duration-300 nav-link">Talent</a>
+             <a href="#blog" class="block text-gray-300 text-center py-4 px-4 hover:bg-gray-900 transition-colors duration-300 nav-link">Insights</a>
+             <div class="p-4 flex flex-col gap-4">
+                <a href="#" class="block text-center py-3 px-4 bg-gray-800 text-white rounded-full hover:bg-gray-700 transition-colors duration-300">Subscribe</a>
+                <a href="#contact" class="block text-center py-3 px-4 bg-fuchsia-600 text-white rounded-full hover:bg-fuchsia-500 transition-colors duration-300">Start a Project</a>
+             </div>
+        </div>
+    </header>
+
+    <main>
+        <!-- Redesigned Cinematic Hero Section -->
+        <section id="home" class="relative h-screen w-full flex flex-col md:flex-row items-end md:items-center overflow-hidden">
+            <!-- 1. Video Background -->
+            <div class="absolute top-0 left-0 w-full h-full">
+                <iframe 
+                    class="hero-video-bg"
+                    src="https://www.youtube.com/embed/j7F5KNw5F20?autoplay=1&mute=1&loop=1&playlist=j7F5KNw5F20&controls=0&showinfo=0&autohide=1&modestbranding=1" 
+                    frameborder="0" 
+                    allow="autoplay; encrypted-media" 
+                    allowfullscreen>
+                </iframe>
+            </div>
+            
+            <!-- 2. Gradient Overlay -->
+            <div class="absolute inset-0 bg-gradient-to-t from-black via-black/70 to-transparent md:bg-gradient-to-r md:from-black/80 md:via-black/60 md:to-transparent z-10"></div>
+            
+            <!-- 3. Content -->
+            <div class="relative z-20 container mx-auto px-6 w-full text-center md:text-left">
+                <div class="w-full md:w-1/2 lg:w-2/5 py-16 md:py-0">
+                    <!-- Branding -->
+                    <div class="flex items-center justify-center md:justify-start gap-3 mb-4">
+                        <img src="NEW LOGO.png" alt="Dialogus Logo Icon" class="h-8 w-auto">
+                        <span class="text-gray-300 font-semibold tracking-wider text-sm">Clarity in a World of Noise</span>
+                    </div>
+                    
+                    <!-- Title -->
+                    <h1 class="hero-title text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight text-white mb-4">
+                        Casteism in the Cockpit: Indigo's Dark Side Under the Radar
+                    </h1>
+                    
+                    <!-- Description -->
+                    <p class="text-gray-300 text-base mb-8">
+                       Dalit Pilot vs IndiGo Airlines: Explosive casteism allegations revealed in this eye-opening episode. We dive deep into systemic discrimination in India's aviation sector and question the silence of those who claim to speak for Dalit rights.
+                    </p>
+                    
+                    <!-- CTAs -->
+                    <div class="flex items-center justify-center md:justify-start gap-4">
+                        <a href="https://www.youtube.com/watch?v=j7F5KNw5F20" target="_blank" class="primary-cta inline-flex items-center gap-2 text-white font-semibold py-3 px-6 rounded-full">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5"><path d="M8 5v14l11-7z"></path></svg>
+                            Watch Now
+                        </a>
+                        <a href="#" class="subscribe-cta inline-flex items-center gap-2 font-semibold py-3 px-6 rounded-full">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-star w-5 h-5 text-yellow-400"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                            Subscribe to Dialogus
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- Redesigned Productions Section -->
+        <section id="videos" class="py-20 md:py-28 bg-black/50">
+            <div class="container mx-auto px-6">
+                <div class="text-left max-w-2xl mb-12">
+                    <h2 class="section-title text-3xl md:text-4xl fade-in">Latest Productions</h2>
+                </div>
+                
+                <div class="space-y-16">
+                    <!-- Subsection: Editor's Pick -->
+                    <div class="fade-in slider-wrapper relative">
+                        <h3 class="text-xl md:text-2xl font-bold text-white mb-4">EDITOR'S PICK</h3>
+                        <div class="slider-container flex overflow-x-auto space-x-4 md:space-x-6 pb-4 scroll-smooth">
+                            <!-- Card 1 -->
+                            <a href="https://www.youtube.com/watch?v=qRXKNV92TWs" target="_blank" class="video-card group relative flex-shrink-0 w-64 md:w-80 lg:w-96 aspect-video rounded-lg overflow-hidden cursor-pointer">
+                                <img src="https://i3.ytimg.com/vi/qRXKNV92TWs/maxresdefault.jpg" class="video-card-thumbnail w-full h-full object-cover" alt="The Real Reason We Still Struggle With Hindu-Muslim Unity">
+                                <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+                                <div class="absolute bottom-0 left-0 p-4 w-full">
+                                    <h4 class="text-white font-bold text-lg video-title-truncate">The Real Reason We Still Struggle With Hindu-Muslim Unity</h4>
+                                </div>
+                            </a>
+                            <!-- Card 2 -->
+                            <a href="https://www.youtube.com/watch?v=Hy_9H97bPgE" target="_blank" class="video-card group relative flex-shrink-0 w-64 md:w-80 lg:w-96 aspect-video rounded-lg overflow-hidden cursor-pointer">
+                                <img src="https://i3.ytimg.com/vi/Hy_9H97bPgE/maxresdefault.jpg" class="video-card-thumbnail w-full h-full object-cover" alt="War should be the last resort when other options have been exhausted">
+                                <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+                                <div class="absolute bottom-0 left-0 p-4 w-full">
+                                    <h4 class="text-white font-bold text-lg video-title-truncate">War should be the last resort when other options have been exhausted</h4>
+                                </div>
+                            </a>
+                            <!-- Card 3 -->
+                            <a href="https://www.youtube.com/watch?v=HzrQc3sgtSs" target="_blank" class="video-card group relative flex-shrink-0 w-64 md:w-80 lg:w-96 aspect-video rounded-lg overflow-hidden cursor-pointer">
+                                <img src="https://i3.ytimg.com/vi/HzrQc3sgtSs/maxresdefault.jpg" class="video-card-thumbnail w-full h-full object-cover" alt="India has a huge development agenda; war is not the country's priority">
+                                <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+                                <div class="absolute bottom-0 left-0 p-4 w-full">
+                                    <h4 class="text-white font-bold text-lg video-title-truncate">India has a huge development agenda; war is not the country's priority || Qamar Agha || DIALOGUS</h4>
+                                </div>
+                            </a>
+                            <!-- Card 4 -->
+                            <a href="https://www.youtube.com/watch?v=Ryp224aa05Y" target="_blank" class="video-card group relative flex-shrink-0 w-64 md:w-80 lg:w-96 aspect-video rounded-lg overflow-hidden cursor-pointer">
+                                <img src="https://i3.ytimg.com/vi/Ryp224aa05Y/maxresdefault.jpg" class="video-card-thumbnail w-full h-full object-cover" alt="India needs to expand its fighter squadrons to bolster national security">
+                                <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+                                <div class="absolute bottom-0 left-0 p-4 w-full">
+                                    <h4 class="text-white font-bold text-lg video-title-truncate">India needs to expand its fighter squadrons to bolster national security || DIALOGUS</h4>
+                                </div>
+                            </a>
+                            <!-- Card 5 -->
+                            <a href="https://www.youtube.com/watch?v=4PTGVVsbrAU" target="_blank" class="video-card group relative flex-shrink-0 w-64 md:w-80 lg:w-96 aspect-video rounded-lg overflow-hidden cursor-pointer">
+                                <img src="https://i3.ytimg.com/vi/4PTGVVsbrAU/maxresdefault.jpg" class="video-card-thumbnail w-full h-full object-cover" alt="Pahalgam attack is a conspiracy hatched by the Pakistan Army">
+                                <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+                                <div class="absolute bottom-0 left-0 p-4 w-full">
+                                    <h4 class="text-white font-bold text-lg video-title-truncate">Pahalgam attack is a conspiracy hatched by the Pakistan Army || DIALOGUS</h4>
+                                </div>
+                            </a>
+                             <!-- Card 6 -->
+                            <a href="https://www.youtube.com/watch?v=ATg1cBN8hR0" target="_blank" class="video-card group relative flex-shrink-0 w-64 md:w-80 lg:w-96 aspect-video rounded-lg overflow-hidden cursor-pointer">
+                                <img src="https://i3.ytimg.com/vi/ATg1cBN8hR0/maxresdefault.jpg" class="video-card-thumbnail w-full h-full object-cover" alt="India should help revive WTO, Rule of law will favour Global Trade">
+                                <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+                                <div class="absolute bottom-0 left-0 p-4 w-full">
+                                    <h4 class="text-white font-bold text-lg video-title-truncate">India should help revive WTO, Rule of law will favour Global Trade || DIALOGUS</h4>
+                                </div>
+                            </a>
+                        </div>
+                        <button class="slider-arrow prev-btn absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 rounded-full p-2 z-10 hidden md:block"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-left text-white"><path d="m15 18-6-6 6-6"/></svg></button>
+                        <button class="slider-arrow next-btn absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 rounded-full p-2 z-10 hidden md:block"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-right text-white"><path d="m9 18 6-6-6-6"/></svg></button>
+                    </div>
+
+                    <!-- Subsection: Trending -->
+                    <div class="fade-in slider-wrapper relative">
+                        <h3 class="text-xl md:text-2xl font-bold text-white mb-4">TRENDING</h3>
+                        <div class="slider-container flex overflow-x-auto space-x-4 md:space-x-6 pb-4 scroll-smooth">
+                            <!-- Repeat cards for this section -->
+                             <div class="video-card group relative flex-shrink-0 w-64 md:w-80 lg:w-96 aspect-video rounded-lg overflow-hidden cursor-pointer">
+                                <img src="https://images.unsplash.com/photo-1511875762322-634503b42976?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80" class="video-card-thumbnail w-full h-full object-cover" alt="Athlete running">
+                                <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+                                <div class="absolute bottom-0 left-0 p-4">
+                                    <h4 class="text-white font-bold text-lg">The Extra Mile</h4>
+                                </div>
+                            </div>
+                             <div class="video-card group relative flex-shrink-0 w-64 md:w-80 lg:w-96 aspect-video rounded-lg overflow-hidden cursor-pointer">
+                                <img src="https://images.unsplash.com/photo-1612036782180-6f0b6cd84627?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80" class="video-card-thumbnail w-full h-full object-cover" alt="Comic book collage">
+                                <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+                                <div class="absolute bottom-0 left-0 p-4">
+                                    <h4 class="text-white font-bold text-lg">Modern Mythology</h4>
+                                </div>
+                            </div>
+                             <div class="video-card group relative flex-shrink-0 w-64 md:w-80 lg:w-96 aspect-video rounded-lg overflow-hidden cursor-pointer">
+                                <img src="https://images.unsplash.com/photo-1608178388331-25a81d5b1e2e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1074&q=80" class="video-card-thumbnail w-full h-full object-cover" alt="Abstract space nebula">
+                                <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+                                <div class="absolute bottom-0 left-0 p-4">
+                                    <h4 class="text-white font-bold text-lg">Beyond the Stars</h4>
+                                </div>
+                            </div>
+                            <div class="video-card group relative flex-shrink-0 w-64 md:w-80 lg:w-96 aspect-video rounded-lg overflow-hidden cursor-pointer">
+                                <img src="https://images.unsplash.com/photo-1543324855-6603a1523b49?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80" class="video-card-thumbnail w-full h-full object-cover" alt="Chef preparing food">
+                                <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+                                <div class="absolute bottom-0 left-0 p-4">
+                                    <h4 class="text-white font-bold text-lg">Culinary Canvas</h4>
+                                </div>
+                            </div>
+                            <div class="video-card group relative flex-shrink-0 w-64 md:w-80 lg:w-96 aspect-video rounded-lg overflow-hidden cursor-pointer">
+                                <img src="https://images.unsplash.com/photo-1528642474492-7af576c21b8c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80" class="video-card-thumbnail w-full h-full object-cover" alt="Architectural design">
+                                <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+                                <div class="absolute bottom-0 left-0 p-4">
+                                    <h4 class="text-white font-bold text-lg">Urban Blueprint</h4>
+                                </div>
+                            </div>
+                        </div>
+                        <button class="slider-arrow prev-btn absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 rounded-full p-2 z-10 hidden md:block"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-left text-white"><path d="m15 18-6-6 6-6"/></svg></button>
+                        <button class="slider-arrow next-btn absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 rounded-full p-2 z-10 hidden md:block"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-right text-white"><path d="m9 18 6-6-6-6"/></svg></button>
+                    </div>
+
+                     <!-- Subsection: World View -->
+                    <div class="fade-in slider-wrapper relative">
+                        <h3 class="text-xl md:text-2xl font-bold text-white mb-4">WORLD VIEW</h3>
+                        <div class="slider-container flex overflow-x-auto space-x-4 md:space-x-6 pb-4 scroll-smooth">
+                            <!-- Repeat cards for this section -->
+                            <div class="video-card group relative flex-shrink-0 w-64 md:w-80 lg:w-96 aspect-video rounded-lg overflow-hidden cursor-pointer">
+                                <img src="https://images.unsplash.com/photo-1528562442345-81648a31e836?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1074&q=80" class="video-card-thumbnail w-full h-full object-cover" alt="Japanese temple">
+                                <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+                                <div class="absolute bottom-0 left-0 p-4">
+                                    <h4 class="text-white font-bold text-lg">Tokyo Stories</h4>
+                                </div>
+                            </div>
+                            <div class="video-card group relative flex-shrink-0 w-64 md:w-80 lg:w-96 aspect-video rounded-lg overflow-hidden cursor-pointer">
+                                <img src="https://images.unsplash.com/photo-1542051841857-5f90071e7989?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80" class="video-card-thumbnail w-full h-full object-cover" alt="Shibuya Crossing">
+                                <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+                                <div class="absolute bottom-0 left-0 p-4">
+                                    <h4 class="text-white font-bold text-lg">Crossroads of the World</h4>
+                                </div>
+                            </div>
+                            <div class="video-card group relative flex-shrink-0 w-64 md:w-80 lg:w-96 aspect-video rounded-lg overflow-hidden cursor-pointer">
+                                <img src="https://images.unsplash.com/photo-1590155214312-6a8409be5454?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80" class="video-card-thumbnail w-full h-full object-cover" alt="African safari">
+                                <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+                                <div class="absolute bottom-0 left-0 p-4">
+                                    <h4 class="text-white font-bold text-lg">Savannah Song</h4>
+                                </div>
+                            </div>
+                            <div class="video-card group relative flex-shrink-0 w-64 md:w-80 lg:w-96 aspect-video rounded-lg overflow-hidden cursor-pointer">
+                                <img src="https://images.unsplash.com/photo-1539037116277-4db20889f2d4?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80" class="video-card-thumbnail w-full h-full object-cover" alt="Rio de Janeiro">
+                                <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+                                <div class="absolute bottom-0 left-0 p-4">
+                                    <h4 class="text-white font-bold text-lg">Rhythm of Rio</h4>
+                                </div>
+                            </div>
+                        </div>
+                        <button class="slider-arrow prev-btn absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 rounded-full p-2 z-10 hidden md:block"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-left text-white"><path d="m15 18-6-6 6-6"/></svg></button>
+                        <button class="slider-arrow next-btn absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 rounded-full p-2 z-10 hidden md:block"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-right text-white"><path d="m9 18 6-6-6-6"/></svg></button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- About Us Section -->
+        <section id="about" class="py-20 md:py-28 overflow-hidden">
+            <div class="container mx-auto px-6">
+                <div class="grid lg:grid-cols-2 gap-16 items-center">
+                    <!-- Left column: Visual graphic -->
+                    <div class="relative hidden lg:flex justify-center items-center h-full fade-in">
+                        <div class="absolute w-80 h-80 bg-fuchsia-500 rounded-full opacity-20 blur-3xl"></div>
+                        <div class="absolute w-64 h-64 bg-cyan-500 rounded-full opacity-20 blur-3xl bottom-0 right-0"></div>
+                        <div class="relative w-full max-w-sm">
+                             <img src="NEW LOGO.png" alt="Dialogus Logo Mark" class="w-full h-auto opacity-10">
+                             <div class="absolute inset-0 bg-gradient-to-br from-black/50 to-transparent"></div>
+                        </div>
+                    </div>
+
+                    <!-- Right column: Content -->
+                    <div class="fade-in" style="transition-delay: 200ms;">
+                        <h2 class="section-title text-3xl md:text-4xl mb-4">Clarity in a World of Noise</h2>
+                        <p class="text-base text-gray-400 leading-relaxed mb-8">
+                            In an era where information is everywhere but clarity is rare, Dialogus stands apart. Our mission is to cut through the noise and deliver insights that truly matter.
+                        </p>
+
+                        <div class="grid sm:grid-cols-3 gap-6 my-10 text-center">
+                            <div class="card-base p-6">
+                                <h3 class="font-bold text-white text-lg">Debate</h3>
+                                <p class="text-gray-400 text-sm mt-1">Challenge assumptions with data-driven analysis.</p>
+                            </div>
+                            <div class="card-base p-6">
+                                <h3 class="font-bold text-white text-lg">Discuss</h3>
+                                <p class="text-gray-400 text-sm mt-1">Engage with diverse perspectives from domain experts.</p>
+                            </div>
+                            <div class="card-base p-6">
+                                <h3 class="font-bold text-white text-lg">Decide</h3>
+                                <p class="text-gray-400 text-sm mt-1">Form your own informed opinions with confidence.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="text-gray-300 space-y-4 text-base leading-relaxed">
+                             <p>At Dialogus, we cover a broad spectrum of subjects: politics, policy, economics, law, culture, and the disruptive trends shaping our future. Our commitment is to go beyond surface-level reporting, giving you the context you need.</p>
+                             <p>Our platform bridges generations, fostering dialogue, not division. With a foundation built on expertise and cutting-edge digital storytelling, Dialogus is more than a channel—it’s a movement toward smarter conversations.</p>
+                        </div>
+
+                        <div class="mt-12 pt-8 border-t border-gray-800 text-center">
+                             <p class="text-lg text-gray-200 mb-4">In a world of fleeting trends, Dialogus offers something rare: <strong class="text-white">substance.</strong></p>
+                            <p class="text-xl font-bold tracking-widest text-fuchsia-400">
+                                WATCH | JOIN | SUBSCRIBE | ENGAGE
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Editor's Pick: Podcasts Section -->
+        <section id="podcasts" class="py-20 md:py-28 bg-black">
+            <div class="container mx-auto px-6">
+                <div class="text-center max-w-2xl mx-auto mb-16">
+                    <h2 class="section-title text-3xl md:text-4xl mb-4 fade-in">Flagship Shows</h2>
+                    <p class="text-gray-400 fade-in" style="transition-delay: 100ms;">Our chart-topping podcasts are where culture-defining conversations happen. Tune in and get inspired.</p>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                    <!-- Podcast 1 -->
+                    <div class="text-center group fade-in">
+                        <img src="https://images.unsplash.com/photo-1620641788421-7a1c36226328?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=400&q=80" alt="Abstract colorful liquid podcast cover" class="w-full h-auto rounded-xl mb-4 transition-transform duration-300 group-hover:scale-105 shadow-2xl aspect-square object-cover">
+                        <h3 class="font-bold text-lg text-white">The Digital Dialogue</h3>
+                        <p class="text-gray-400 text-sm">With Ava Chen</p>
+                    </div>
+                    <!-- Podcast 2 -->
+                    <div class="text-center group fade-in" style="transition-delay: 150ms;">
+                        <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=400&q=80" alt="Abstract wave podcast cover" class="w-full h-auto rounded-xl mb-4 transition-transform duration-300 group-hover:scale-105 shadow-2xl aspect-square object-cover">
+                        <h3 class="font-bold text-lg text-white">Uncharted Territories</h3>
+                        <p class="text-gray-400 text-sm">With Leo Kim</p>
+                    </div>
+                    <!-- Podcast 3 -->
+                    <div class="text-center group fade-in" style="transition-delay: 300ms;">
+                        <img src="https://images.unsplash.com/photo-1579546929518-9e396f3cc809?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=400&q=80" alt="Colorful gradient podcast cover" class="w-full h-auto rounded-xl mb-4 transition-transform duration-300 group-hover:scale-105 shadow-2xl aspect-square object-cover">
+                        <h3 class="font-bold text-lg text-white">The Creative Code</h3>
+                        <p class="text-gray-400 text-sm">With Mia Jones</p>
+                    </div>
+                    <!-- Podcast 4 -->
+                    <div class="text-center group fade-in" style="transition-delay: 450ms;">
+                        <img src="https://images.unsplash.com/photo-1634017839464-5c339ebe3cb4?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=400&q=80" alt="Abstract 3D shapes podcast cover" class="w-full h-auto rounded-xl mb-4 transition-transform duration-300 group-hover:scale-105 shadow-2xl aspect-square object-cover">
+                        <h3 class="font-bold text-lg text-white">Blueprint</h3>
+                        <p class="text-gray-400 text-sm">With David Rodriguez</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Speakers Section -->
+        <section id="speakers" class="py-20 md:py-28">
+            <div class="container mx-auto px-6">
+                 <div class="text-center max-w-2xl mx-auto mb-16">
+                    <h2 class="section-title text-3xl md:text-4xl mb-4 fade-in">The Voices Behind Dialogus</h2>
+                    <p class="text-gray-400 fade-in" style="transition-delay: 100ms;">Meet the brilliant minds and compelling personalities that host our shows and lead our creative productions.</p>
+                </div>
+                <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
+                    <!-- Speaker 1 -->
+                    <div class="speaker-card rounded-lg overflow-hidden relative fade-in">
+                        <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=400&q=80" alt="Headshot of Ava Chen" class="w-full h-full object-cover transition-transform duration-300 hover:scale-105">
+                        <div class="speaker-info">
+                            <h3 class="font-bold text-lg text-white">Ava Chen</h3>
+                            <p class="text-fuchsia-300 text-sm">Host, The Digital Dialogue</p>
+                        </div>
+                    </div>
+                     <!-- Speaker 2 -->
+                     <div class="speaker-card rounded-lg overflow-hidden relative fade-in" style="transition-delay: 100ms;">
+                        <img src="https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=400&q=80" alt="Headshot of Leo Kim" class="w-full h-full object-cover transition-transform duration-300 hover:scale-105">
+                        <div class="speaker-info">
+                            <h3 class="font-bold text-lg text-white">Leo Kim</h3>
+                            <p class="text-fuchsia-300 text-sm">Host, Uncharted Territories</p>
+                        </div>
+                    </div>
+                    <!-- Speaker 3 -->
+                    <div class="speaker-card rounded-lg overflow-hidden relative fade-in" style="transition-delay: 200ms;">
+                        <img src="https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=400&q=80" alt="Headshot of Mia Jones" class="w-full h-full object-cover transition-transform duration-300 hover:scale-105">
+                        <div class="speaker-info">
+                            <h3 class="font-bold text-lg text-white">Mia Jones</h3>
+                            <p class="text-fuchsia-300 text-sm">Host, The Creative Code</p>
+                        </div>
+                    </div>
+                    <!-- Speaker 4 -->
+                    <div class="speaker-card rounded-lg overflow-hidden relative fade-in" style="transition-delay: 300ms;">
+                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=400&q=80" alt="Headshot of David Rodriguez" class="w-full h-full object-cover transition-transform duration-300 hover:scale-105">
+                        <div class="speaker-info">
+                            <h3 class="font-bold text-lg text-white">David Rodriguez</h3>
+                            <p class="text-fuchsia-300 text-sm">Executive Producer</p>
+                        </div>
+                    </div>
+                    <!-- Speaker 5 -->
+                    <div class="speaker-card rounded-lg overflow-hidden relative fade-in" style="transition-delay: 400ms;">
+                        <img src="https://images.unsplash.com/photo-1580489944761-15a19d654956?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=400&q=80" alt="Headshot of Elena Sato" class="w-full h-full object-cover transition-transform duration-300 hover:scale-105">
+                        <div class="speaker-info">
+                            <h3 class="font-bold text-lg text-white">Elena Sato</h3>
+                            <p class="text-fuchsia-300 text-sm">Head of Audio</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Blog Section -->
+        <section id="blog" class="py-20 md:py-28 bg-black">
+            <div class="container mx-auto px-6">
+                <div class="text-center max-w-2xl mx-auto mb-16">
+                    <h2 class="section-title text-3xl md:text-4xl mb-4 fade-in">Insights & Stories</h2>
+                    <p class="text-gray-400 fade-in" style="transition-delay: 100ms;">Go behind the scenes and explore our perspective on the evolving media landscape.</p>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <!-- Blog Post 1 -->
+                    <a href="#" class="card-base group p-6 fade-in">
+                        <div class="card-glow-border"></div>
+                        <p class="text-sm text-gray-400 mb-4">Sep 04, 2025</p>
+                        <h3 class="font-bold text-xl mb-2 flex-grow text-white group-hover:text-fuchsia-400 transition-colors">The Art of the Interview: Building Rapport in Minutes</h3>
+                        <p class="text-gray-400 text-sm mb-4">Our top producers share their secrets for creating conversations that feel authentic and revealing.</p>
+                        <span class="font-semibold text-fuchsia-400 text-sm">Read Article &rarr;</span>
+                    </a>
+                    <!-- Blog Post 2 -->
+                    <a href="#" class="card-base group p-6 fade-in" style="transition-delay: 150ms;">
+                         <div class="card-glow-border"></div>
+                        <p class="text-sm text-gray-400 mb-4">Aug 28, 2025</p>
+                        <h3 class="font-bold text-xl mb-2 flex-grow text-white group-hover:text-fuchsia-400 transition-colors">Sonic Branding: Why Your Podcast Needs a Signature Sound</h3>
+                        <p class="text-gray-400 text-sm mb-4">Exploring the psychology of sound and how to craft an unforgettable audio identity for your show.</p>
+                        <span class="font-semibold text-fuchsia-400 text-sm">Read Article &rarr;</span>
+                    </a>
+                     <!-- Blog Post 3 -->
+                    <a href="#" class="card-base group p-6 fade-in" style="transition-delay: 300ms;">
+                         <div class="card-glow-border"></div>
+                        <p class="text-sm text-gray-400 mb-4">Aug 15, 2025</p>
+                        <h3 class="font-bold text-xl mb-2 flex-grow text-white group-hover:text-fuchsia-400 transition-colors">Beyond the Mic: Our Approach to Visual Podcasting</h3>
+                        <p class="text-gray-400 text-sm mb-4">How we turn audio-first content into compelling visual experiences for platforms like YouTube.</p>
+                        <span class="font-semibold text-fuchsia-400 text-sm">Read Article &rarr;</span>
+                    </a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Disclaimer Section -->
+    <section id="disclaimer" class="py-20 md:py-28">
+        <div class="container mx-auto px-6">
+            <div class="max-w-5xl mx-auto fade-in">
+                <div class="text-center">
+                    <h2 class="section-title text-3xl md:text-4xl mb-4">Disclaimer Notice</h2>
+                    <p class="text-gray-400 max-w-2xl mx-auto">The following terms apply to all content on our website, YouTube channel, and other digital platforms. By accessing our content, you agree to this notice.</p>
+                </div>
+
+                <div class="mt-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <!-- Disclaimer Card 1 -->
+                    <div class="card-base p-6 text-center items-center flex flex-col">
+                        <div class="w-12 h-12 flex items-center justify-center rounded-lg bg-fuchsia-500/10 text-fuchsia-400">
+                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-briefcase-business"><path d="M12 12h.01"/><path d="M16 6V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/><path d="M22 13a1.5 1.5 0 0 0-1.5-1.5h-17A1.5 1.5 0 0 0 2 13v4a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2Z"/></svg>
+                        </div>
+                        <h3 class="text-lg font-bold text-white mt-4">No Professional Advice</h3>
+                        <p class="text-gray-400 text-sm mt-2 flex-grow">Our content is for informational purposes and does not constitute legal, financial, or medical advice. Please consult a qualified professional for specific guidance.</p>
+                    </div>
+                    <!-- Disclaimer Card 2 -->
+                    <div class="card-base p-6 text-center items-center flex flex-col">
+                         <div class="w-12 h-12 flex items-center justify-center rounded-lg bg-fuchsia-500/10 text-fuchsia-400">
+                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-shield-check"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/><path d="m9 12 2 2 4-4"/></svg>
+                        </div>
+                        <h3 class="text-lg font-bold text-white mt-4">Accuracy of Information</h3>
+                        <p class="text-gray-400 text-sm mt-2 flex-grow">While we strive for accuracy, we make no guarantees. Opinions expressed by hosts or guests are their own and not necessarily the views of Dialogus.</p>
+                    </div>
+                    <!-- Disclaimer Card 3 -->
+                    <div class="card-base p-6 text-center items-center flex flex-col">
+                        <div class="w-12 h-12 flex items-center justify-center rounded-lg bg-fuchsia-500/10 text-fuchsia-400">
+                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-external-link"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg>
+                        </div>
+                        <h3 class="text-lg font-bold text-white mt-4">Third-Party Content</h3>
+                        <p class="text-gray-400 text-sm mt-2 flex-grow">We are not responsible for the content or practices of any third-party websites or services linked to from our platforms. Use them at your own risk.</p>
+                    </div>
+                     <!-- Disclaimer Card 4 -->
+                    <div class="card-base p-6 text-center items-center flex flex-col">
+                         <div class="w-12 h-12 flex items-center justify-center rounded-lg bg-fuchsia-500/10 text-fuchsia-400">
+                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user-check"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><polyline points="16 11 18 13 22 9"/></svg>
+                        </div>
+                        <h3 class="text-lg font-bold text-white mt-4">Viewer Responsibility</h3>
+                        <p class="text-gray-400 text-sm mt-2 flex-grow">You are solely responsible for how you interpret and use the information we provide. We do not endorse harmful or unlawful interpretations of our content.</p>
+                    </div>
+                     <!-- Disclaimer Card 5 -->
+                    <div class="card-base p-6 text-center items-center flex flex-col">
+                         <div class="w-12 h-12 flex items-center justify-center rounded-lg bg-fuchsia-500/10 text-fuchsia-400">
+                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-alert-triangle"><path d="m21.73 18-8-14a2 2 0 0 0-3.46 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" x2="12" y1="9" y2="13"/><line x1="12" x2="12.01" y1="17" y2="17"/></svg>
+                        </div>
+                        <h3 class="text-lg font-bold text-white mt-4">Limitation of Liability</h3>
+                        <p class="text-gray-400 text-sm mt-2 flex-grow">Dialogus and its team shall not be held liable for any damages or losses arising from the use of our content. This includes financial or reputational harm.</p>
+                    </div>
+                     <!-- Disclaimer Card 6 -->
+                    <div class="card-base p-6 text-center items-center flex flex-col">
+                         <div class="w-12 h-12 flex items-center justify-center rounded-lg bg-fuchsia-500/10 text-fuchsia-400">
+                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-file-clock"><path d="M16 22h2a2 2 0 0 0 2-2V7l-5-5H6a2 2 0 0 0-2 2v14"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M8 14h4.5a.5.5 0 0 0 0-1H8a1 1 0 0 0-1 1v4a1 1 0 0 0 1 1h1"/><circle cx="8" cy="18" r="4"/></svg>
+                        </div>
+                        <h3 class="text-lg font-bold text-white mt-4">Updates to Disclaimer</h3>
+                        <p class="text-gray-400 text-sm mt-2 flex-grow">We may update this notice periodically. The updated version will be posted here with a new effective date to reflect any changes in our operations or laws.</p>
+                    </div>
+                </div>
+
+                <div class="mt-16 text-center border-t border-gray-800 pt-10">
+                    <h3 class="text-xl font-semibold text-white mb-3">Contact Us</h3>
+                    <p class="text-gray-400">If you have any questions about this Disclaimer Notice, please contact us at:</p>
+                    <p class="mt-4 text-gray-200">[Official email address]</p>
+                    <p class="text-gray-400 text-sm">[Registered address]</p>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer id="contact" class="bg-black border-t border-gray-900">
+        <div class="container mx-auto px-6 py-16">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="md:col-span-1">
+                    <h3 class="text-2xl font-bold mb-2 uppercase text-white">Dialogus</h3>
+                    <p class="text-gray-400 max-w-xs">Crafting the future of digital narratives, one story at a time.</p>
+                </div>
+                 <div class="md:col-span-2">
+                    <h3 class="text-xl font-semibold mb-4 text-white">Have a story that needs to be told?</h3>
+                    <p class="text-gray-400 mb-6">Whether you're an established brand or a rising creator, we're here to help you produce content that makes an impact. Let's build something amazing together.</p>
+                    <a href="mailto:hello@dialogus.com" class="primary-cta text-white font-semibold py-3 px-8 rounded-full inline-block">
+                        Get In Touch
+                    </a>
+                 </div>
+            </div>
+            <div class="mt-12 pt-8 border-t border-gray-800 flex flex-col sm:flex-row justify-between items-center text-sm">
+                 <p class="text-gray-500">&copy; 2025 Dialogus. All Rights Reserved.</p>
+                 <div class="flex space-x-4 mt-4 sm:mt-0">
+                    <a href="#" class="text-gray-500 hover:text-white transition-colors">Twitter</a>
+                    <a href="#" class="text-gray-500 hover:text-white transition-colors">YouTube</a>
+                    <a href="#" class="text-gray-500 hover:text-white transition-colors">LinkedIn</a>
+                    <a href="#disclaimer" class="text-gray-500 hover:text-white transition-colors">Disclaimer</a>
+                 </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile menu toggle
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+        mobileMenuButton.addEventListener('click', () => {
+            mobileMenu.classList.toggle('-translate-x-full');
+        });
+        const mobileMenuLinks = mobileMenu.querySelectorAll('a.nav-link');
+        mobileMenuLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.add('-translate-x-full');
+            });
+        });
+
+        // Simple fade-in on scroll observer
+        const fadeInObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, {
+            threshold: 0.1
+        });
+        const fadeIns = document.querySelectorAll('.fade-in');
+        fadeIns.forEach(el => fadeInObserver.observe(el));
+        
+        // Sticky header background on scroll
+        const header = document.getElementById('header');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 20) { 
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+        });
+
+        // Active link highlighting on scroll
+        const sections = document.querySelectorAll('section[id]');
+        const navLinks = document.querySelectorAll('nav a.nav-link, #mobile-menu a.nav-link');
+
+        const navObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const id = entry.target.getAttribute('id');
+                    navLinks.forEach(link => {
+                        link.classList.remove('active');
+                        if (link.getAttribute('href') === `#${id}`) {
+                            link.classList.add('active');
+                        }
+                    });
+                }
+            });
+        }, { rootMargin: '-50% 0px -50% 0px' });
+
+        sections.forEach(section => {
+            navObserver.observe(section);
+        });
+
+        // Netflix-style slider functionality
+        document.addEventListener('DOMContentLoaded', () => {
+            const sliderWrappers = document.querySelectorAll('.slider-wrapper');
+
+            sliderWrappers.forEach(wrapper => {
+                const container = wrapper.querySelector('.slider-container');
+                const prevBtn = wrapper.querySelector('.prev-btn');
+                const nextBtn = wrapper.querySelector('.next-btn');
+
+                if(!container || !prevBtn || !nextBtn) return;
+
+                nextBtn.addEventListener('click', () => {
+                    const scrollAmount = container.clientWidth * 0.8;
+                    container.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+                });
+
+                prevBtn.addEventListener('click', () => {
+                    const scrollAmount = container.clientWidth * 0.8;
+                    container.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+                });
+            });
+        });
+
+    </script>
+
+</body>
+</html>
+
